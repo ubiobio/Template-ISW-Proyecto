@@ -39,7 +39,7 @@ async function login(user) {
       { email: userFound.email, roles: userFound.roles },
       ACCESS_JWT_SECRET,
       {
-        expiresIn: "1d",
+        expiresIn: "10s",
       },
     );
 
@@ -74,7 +74,7 @@ async function refresh(cookies) {
       async (err, user) => {
         if (err) return [null, "La sesion a caducado, vuelva a iniciar sesion"];
 
-        const userFound = await findOne({
+        const userFound = await User.findOne({
           email: user.email,
         })
           .populate("roles")
@@ -96,6 +96,7 @@ async function refresh(cookies) {
 
     return accessToken;
   } catch (error) {
+    console.log("Error de token: ", error);
     handleError(error, "auth.service -> refresh");
   }
 }
